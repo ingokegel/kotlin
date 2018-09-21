@@ -15,14 +15,10 @@
  */
 
 package org.jetbrains.kotlin.idea.decompiler.navigation
-
 import com.intellij.psi.PsiElement
 import junit.framework.TestCase
 import org.jetbrains.kotlin.idea.KotlinFileType
-import org.jetbrains.kotlin.idea.test.KotlinCodeInsightTestCase
-import org.jetbrains.kotlin.idea.test.ModuleKind
-import org.jetbrains.kotlin.idea.test.closeAndDeleteProject
-import org.jetbrains.kotlin.idea.test.configureAs
+import org.jetbrains.kotlin.idea.test.*
 
 class NavigateToStdlibSourceTest : KotlinCodeInsightTestCase() {
 
@@ -44,9 +40,26 @@ class NavigateToStdlibSourceTest : KotlinCodeInsightTestCase() {
         doTest("console.kt", ModuleKind.KOTLIN_JAVASCRIPT, ModuleKind.KOTLIN_JVM_WITH_STDLIB_SOURCES)
     }
 
+    fun testNavigateToCommonDeclaration() {
+        doTest(
+            "fun some() { <caret>mapOf(1 to 2, 3 to 4) }",
+            "Maps.kt",
+            ModuleKind.KOTLIN_JVM_WITH_STDLIB_SOURCES
+        )
+    }
+
     private fun doTest(sourceFileName: String, mainModule: ModuleKind, additionalModule: ModuleKind? = null) {
-        val navigationElement = configureAndResolve(FILE_TEXT, mainModule, additionalModule)
+        doTest(FILE_TEXT, sourceFileName, mainModule, additionalModule)
+    }
+
+    private fun doTest(text: String, sourceFileName: String, mainModule: ModuleKind, additionalModule: ModuleKind? = null) {
+        val navigationElement = configureAndResolve(text, mainModule, additionalModule)
         TestCase.assertEquals(sourceFileName, navigationElement.containingFile.name)
+    }
+
+    override fun setUp() {
+        super.setUp()
+        PluginTestCaseBase.mockJdk()
     }
 
     override fun tearDown() {

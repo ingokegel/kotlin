@@ -75,6 +75,26 @@ public class ForTestCompileRuntime {
     }
 
     @NotNull
+    public static File stdlibJdk8ForTests() {
+        return assertExists(new File("dist/kotlinc/lib/kotlin-stdlib-jdk8.jar"));
+    }
+
+    @NotNull
+    public static File stdlibJdk8SourcesForTests() {
+        return assertExists(new File("dist/kotlinc/lib/kotlin-stdlib-jdk8-sources.jar"));
+    }
+
+    @NotNull
+    public static File stdlibJdk7ForTests() {
+        return assertExists(new File("dist/kotlinc/lib/kotlin-stdlib-jdk7.jar"));
+    }
+
+    @NotNull
+    public static File stdlibJdk7SourcesForTests() {
+        return assertExists(new File("dist/kotlinc/lib/kotlin-stdlib-jdk7-sources.jar"));
+    }
+
+    @NotNull
     public static File stdlibCommonForTests() {
         return assertExists(new File("dist/common/kotlin-stdlib-common.jar"));
     }

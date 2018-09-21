@@ -49,6 +49,7 @@ import org.jetbrains.kotlin.utils.addIfNotNull
 import org.jetbrains.kotlin.utils.rethrow
 import java.io.File
 import java.io.IOException
+import java.lang.IllegalStateException
 import java.util.*
 import kotlin.reflect.full.findAnnotation
 
@@ -93,6 +94,16 @@ abstract class KotlinLightCodeInsightFixtureTestCase : KotlinLightCodeInsightFix
 
     override fun getProjectDescriptor(): LightProjectDescriptor
             = getProjectDescriptorFromFileDirective()
+
+    protected fun getProjectDescriptorFromAnnotation(): LightProjectDescriptor {
+        val testMethod = this::class.java.getDeclaredMethod(name)
+        val platformId = testMethod.getAnnotation(ProjectDescriptorKind::class.java)?.value
+
+        return when (platformId) {
+            MULTIPLATFORM_STDLIB -> KotlinJdkAndMultiplatformStdlibDescriptor(true)
+            else -> throw IllegalStateException("Unknown value for project descriptor kind")
+        }
+    }
 
     protected fun getProjectDescriptorFromTestName(): LightProjectDescriptor {
         val testName = StringUtil.toLowerCase(getTestName(false))
